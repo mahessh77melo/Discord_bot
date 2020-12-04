@@ -12,7 +12,7 @@ const botCommandStarter = "!";
 const interact = (message) => {
 	if (message.content.toLowerCase() === "hey") {
 		//  the initial greet message
-		const greet = `Hey there ${message.author.username}. I am ${client.user.tag} and <@764089799907737620> created me.
+		const greet = `Hey there ${message.author.username}. I am ${client.user.tag} and <@${process.env.KINGJAMES_ID}> created me.
 I am still in the development phase. Try giving commands to me.. My commands should start with \`${botCommandStarter}\``;
 		// send the message
 		message.channel.send(greet);
