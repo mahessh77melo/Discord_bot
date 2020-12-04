@@ -1,0 +1,16 @@
+{
+  "name": "discord_bot",
+  "version": "1.0.0",
+  "description": "My first discord bot",
+  "main": "index.js",
+  "scripts": {
+   "start":"node ./src/bot.js",
+   "dev":"nodemon ./src/bot.js"
+  },
+  "author": "Mahesh",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0"
+  }
+}
