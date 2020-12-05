@@ -52,20 +52,22 @@ async function search(media, name, message) {
 		);
 		const mainResult = res.data.results[0];
 		if (mainResult) {
-			message.reply(`
+			const imageUrl = `${process.env.IMG_LINK}${mainResult.poster_path}`;
+			message.reply(
+				`
 Name of the ${media === "tv" ? "TV Show" : media} : **${
-				mainResult.name || mainResult.title
-			}**
-
-${process.env.IMG_LINK}${mainResult.poster_path}
+					mainResult.name || mainResult.title
+				}**
 
 Overview : ${mainResult.overview}
 
-Released On : **${
-				mainResult.first_air_date || mainResult.release_date + "  "
-			}**`);
+Released On : **${mainResult.first_air_date || mainResult.release_date}**
+
+`,
+				{ files: [imageUrl] }
+			);
 		} else {
-			message.reply(`No ${media === "tv" ? "TV Show" : media} of that sort.`);
+			message.reply(`No ${media === "tv" ? "TV Show" : media} named ${name}.`);
 		}
 	} catch (error) {
 		console.log(error);
