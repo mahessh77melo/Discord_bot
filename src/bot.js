@@ -11,7 +11,7 @@ const myAxios = axios.create({
 client.login(process.env.DISCORD_BOT_TOKEN);
 client.on("ready", () => {
 	client.user.setPresence({
-		activity: { name: "with discord.js", type: "PLAYING" },
+		activity: { name: "out for !commands", type: "WATCHING" },
 		status: "online",
 	});
 	console.log(`${client.user.tag} is online and ready to go!!`);
