@@ -9,9 +9,13 @@ const myAxios = axios.create({
 });
 
 client.login(process.env.DISCORD_BOT_TOKEN);
-client.on("ready", () =>
-	console.log(`${client.user.tag} is online and ready to go!!`)
-);
+client.on("ready", () => {
+	client.user.setPresence({
+		game: { name: "with discord.js" },
+		status: "online",
+	});
+	console.log(`${client.user.tag} is online and ready to go!!`);
+});
 const botCommandStarter = "!";
 
 // callback function for message event
@@ -38,7 +42,7 @@ Now type \`!commands\``;
 			search("tv", command.split(" ").slice(1).join(" "), message);
 		else
 			message.channel.send(
-				`I don't know how to handle the ${command} command! :(`
+				`I don't know how to handle the **${command}** command! :(`
 			);
 	} else return;
 };
