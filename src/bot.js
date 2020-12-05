@@ -19,18 +19,27 @@ const interact = (message) => {
 	if (message.content.toLowerCase() === "hey") {
 		//  the initial greet message
 		const greet = `Hey there ${message.author.username}. I am ${client.user.tag} and <@${process.env.KINGJAMES_ID}> created me.
-I am still in the development phase. Try giving commands to me.. My commands should start with \`${botCommandStarter}\``;
+I am still in the development phase. Try giving commands to me.. My commands should start with \`${botCommandStarter}\`.
+Now type \`!commands\``;
 		// send the message
 		message.channel.send(greet);
 	} else if (message.content.startsWith(botCommandStarter)) {
 		// main commands
 		const command = message.content.split(botCommandStarter).slice(1).join("");
-		// message.channel.send(`You have given the **${command}** command to me!`);
+		if (command === "commands")
+			message.channel.send(`A list of my commands :
+	1) !tv (name of the show)
+	2) !movie (name of the movie)
+	3) greet me with a hey`);
 		// searching for movie or a tv show
-		if (command.toLowerCase().startsWith("movie"))
+		else if (command.toLowerCase().startsWith("movie"))
 			search("movie", command.split(" ").slice(1).join(" "), message);
-		if (command.toLowerCase().startsWith("tv"))
+		else if (command.toLowerCase().startsWith("tv"))
 			search("tv", command.split(" ").slice(1).join(" "), message);
+		else
+			message.channel.send(
+				`I don't know how to handle the ${command} command! :(`
+			);
 	} else return;
 };
 
