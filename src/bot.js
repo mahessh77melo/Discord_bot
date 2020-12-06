@@ -65,15 +65,14 @@ Now type \`!commands\``;
 		else if (command.startsWith("tv"))
 			search("tv", command.split(" ").slice(1).join(" "), message);
 		// handling a wrong command
-		else if (command === "wrong") handleWrong(prev, message);
+		else if (command === "wrong")
+			prev ? handleWrong(prev, message, false) : noPrevError(message);
 		// handling the list command
-		else if (command === "list") handleWrong(prev, message, true);
+		else if (command === "list")
+			prev ? handleWrong(prev, message, true) : noPrevError(message);
 		// handling the options
 		// giving choice without a prev result
-		else if (!prev && parseInt(command))
-			message.reply(
-				"Search for a movie or tv show first, then go for the choice!"
-			);
+		else if (!prev && parseInt(command)) noPrevError(message);
 		// invalid options
 		else if (
 			(prev && parseInt(command) > prev.length) ||
@@ -155,6 +154,10 @@ ${movie.media_type === "tv" ? "First Air Date" : "Released On"} : **${
 
 `;
 	message.reply(compiledText, { files: [imageUrl] });
+}
+
+function noPrevError(message) {
+	message.reply("Search for a movie or tv show first, then go for the choice!");
 }
 
 // calling the sendMovie function with the correct choice
