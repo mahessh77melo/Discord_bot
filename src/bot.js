@@ -1,4 +1,4 @@
-const { Client, ClientPresence } = require("discord.js");
+const { Client } = require("discord.js");
 require("dotenv").config();
 const axios = require("axios");
 const movieQuotes = require("movie-quotes");
@@ -37,6 +37,8 @@ Now type \`!commands\``;
 			.slice(1)
 			.join("")
 			.toLowerCase();
+
+		// knowing the commands
 		if (command === "commands")
 			message.channel.send(`A list of my commands :
 	1) \`!tv\` [name of the show]
@@ -67,17 +69,26 @@ Now type \`!commands\``;
 		// handling the list command
 		else if (command === "list") handleWrong(prev, message, true);
 		// handling the options
-		// invalid options
-		else if (parseInt(command) > prev.length || parseInt(command) === 0)
+		// giving choice without a prev result
+		else if (!prev && parseInt(command))
 			message.reply(
-				`Are you messing with me?!\nIf not, choose an option between 1 and ${prev.length}.`
+				"Search for a movie or tv show first, then go for the choice!"
+			);
+		// invalid options
+		else if (
+			(prev && parseInt(command) > prev.length) ||
+			parseInt(command) === 0
+		)
+			message.reply(
+				`Are you messing with me?!\nIf not, choose an option __between 1 and ${prev.length}__.`
 			);
 		// valid options
-		else if (parseInt(command) > 0)
+		else if (prev && parseInt(command) > 0)
 			returnCorrect(parseInt(command), prev, message);
+		// invalid command
 		else
 			message.channel.send(
-				`I don't know how to handle the **${command}** command! 😒😒`
+				`I don't know how to handle the __**${command}**__ command! 😒😒`
 			);
 	} else return;
 };
@@ -153,20 +164,30 @@ function returnCorrect(choice, movies, message) {
 
 // sending a random Breaking Bad quote
 async function breakingBadQuote(message) {
-	const returnedValue = await axios.get(
-		"https://breaking-bad-quotes.herokuapp.com/v1/quotes"
-	);
-	const result = returnedValue.data[0];
-	message.channel.send(`"${result.quote}" - **${result.author}**.`);
+	try {
+		const returnedValue = await axios.get(
+			"https://breaking-bad-quotes.herokuapp.com/v1/quotes"
+		);
+		const result = returnedValue.data[0];
+		message.channel.send(`"${result.quote}" - **${result.author}**.`);
+	} catch (error) {
+		console.log(error);
+		message.channel.send("There was an error with the api :confused:");
+	}
 }
 
 // send a random Game of thrones quote
 async function gotQuote(message) {
-	const returnedValue = await axios.get(
-		"https://game-of-thrones-quotes.herokuapp.com/v1/random"
-	);
-	const data = returnedValue.data;
-	message.channel.send(`"${data.sentence}" - **${data.character.name}**.`);
+	try {
+		const returnedValue = await axios.get(
+			"https://game-of-thrones-quotes.herokuapp.com/v1/random"
+		);
+		const data = returnedValue.data;
+		message.channel.send(`"${data.sentence}" - **${data.character.name}**.`);
+	} catch (error) {
+		console.log(error);
+		message.channel.send("There was an error with the api :confused:");
+	}
 }
 
 // send a random movie quote
