@@ -9,7 +9,7 @@ const myAxios = axios.create({
 	baseURL: "https://api.themoviedb.org/3",
 });
 
-let prev;
+let prev = {};
 
 client.login(process.env.DISCORD_BOT_TOKEN);
 client.on("ready", () => {
@@ -66,24 +66,32 @@ Now type \`!commands\``;
 			search("tv", command.split(" ").slice(1).join(" "), message);
 		// handling a wrong command
 		else if (command === "wrong")
-			prev ? handleWrong(prev, message, false) : noPrevError(message);
+			prev[message.channel.id]
+				? handleWrong(prev[message.channel.id], message, false)
+				: noPrevError(message);
 		// handling the list command
 		else if (command === "list")
-			prev ? handleWrong(prev, message, true) : noPrevError(message);
+			prev[message.channel.id]
+				? handleWrong(prev[message.channel.id], message, true)
+				: noPrevError(message);
 		// handling the options
 		// giving choice without a prev result
-		else if (!prev && parseInt(command)) noPrevError(message);
+		else if (!prev[message.channel.id] && parseInt(command))
+			noPrevError(message);
 		// invalid options
 		else if (
-			(prev && parseInt(command) > prev.length) ||
+			(prev[message.channel.id] &&
+				parseInt(command) > prev[message.channel.id].length) ||
 			parseInt(command) === 0
 		)
 			message.reply(
-				`Are you messing with me?!\nIf not, choose an option __between 1 and ${prev.length}__.`
+				`Are you messing with me?!\nIf not, choose an option __between 1 and ${
+					prev[message.channel.id].length
+				}__.`
 			);
 		// valid options
-		else if (prev && parseInt(command) > 0)
-			returnCorrect(parseInt(command), prev, message);
+		else if (prev[message.channel.id] && parseInt(command) > 0)
+			returnCorrect(parseInt(command), prev[message.channel.id], message);
 		// invalid command
 		else
 			message.channel.send(
@@ -102,7 +110,8 @@ async function search(media, name, message) {
 		// extracting the first element of the array (mostly correct)
 		const mainResult = res.data.results[0];
 		// storing the results in a global variable for further use
-		prev = res.data.results;
+		console.log(message.channel.id);
+		prev[message.channel.id] = res.data.results;
 		if (mainResult) {
 			sendMovie(mainResult, message);
 		} else {
@@ -122,6 +131,13 @@ async function search(media, name, message) {
 
 // handling the wrong results by showing a number of other results
 function handleWrong(movies, message, isCorrect) {
+	// user has given wrong when there was only a single result received.
+	if (movies.length === 1) {
+		message.reply(
+			"That was the only result I got. Sorry, I'd rather suggest you watch some popular ones xD."
+		);
+		return;
+	}
 	let text = `Wasn't the result you expected 🤔🤔?? pas de probleme!\nNow here are the list of results that I got, just give me the serial number and you are good to go. 
 	`;
 	// differentiating a list command from a wrong command
@@ -196,7 +212,6 @@ async function gotQuote(message) {
 // send a random movie quote
 async function movieQuote(message) {
 	const quote = movieQuotes.random();
-	console.log(movieQuotes.all);
 	message.channel.send(quote);
 }
 
