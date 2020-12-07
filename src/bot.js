@@ -1,7 +1,6 @@
 const { Client } = require("discord.js");
 require("dotenv").config();
 const axios = require("axios");
-const movieQuotes = require("movie-quotes");
 
 const client = new Client();
 
