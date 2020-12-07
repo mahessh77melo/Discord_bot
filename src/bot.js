@@ -49,6 +49,7 @@ Now type \`!commands\``;
 	6) \`!BrBa\` (to get a random Breaking Bad quote)
 	7) \`!got\` (to get a random Game Of Thrones quote)
 	8) \`!line\` (for a random movie line)
+	9) \`!anime\` (for a random anime line)
 	`);
 		// empty string
 		else if (command === "")
@@ -57,8 +58,8 @@ Now type \`!commands\``;
 		else if (command === "brba") breakingBadQuote(message);
 		// Game of thrones quotes
 		else if (command === "got") gotQuote(message);
-		// random movie line
-		else if (command === "line") movieQuote(message);
+		// random anime line
+		else if (command === "anime") animeQuote(message);
 		// searching for movie or a tv show
 		else if (command.startsWith("movie"))
 			search("movie", command.split(" ").slice(1).join(" "), message);
@@ -157,7 +158,6 @@ function handleWrong(movies, message, isCorrect) {
 // function to send a movie detail as messsage
 function sendMovie(movie, message) {
 	const imageUrl = `${process.env.IMG_LINK}${movie.poster_path}`;
-	console.log(movie);
 	const isTV = movie.first_air_date ? true : false;
 	const isAnime = isTV && movie.original_language === "ja";
 	const compiledText = `
@@ -212,10 +212,20 @@ async function gotQuote(message) {
 	}
 }
 
-// send a random movie quote
-async function movieQuote(message) {
-	const quote = movieQuotes.random();
-	message.channel.send(quote);
+// send a random anime quote
+async function animeQuote(message) {
+	try {
+		const returnedValue = await axios.get(
+			"https://animechanapi.xyz/api/quotes/random"
+		);
+		const data = returnedValue.data;
+		message.channel.send(
+			`"${data.quote}" - **${data.character}**.\n\nFrom *${data.anime}*.`
+		);
+	} catch (error) {
+		console.log(error);
+		message.channel.send("There was an error with the api :confused:");
+	}
 }
 
 // main messageEvent listener
