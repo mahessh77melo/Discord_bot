@@ -157,14 +157,17 @@ function handleWrong(movies, message, isCorrect) {
 // function to send a movie detail as messsage
 function sendMovie(movie, message) {
 	const imageUrl = `${process.env.IMG_LINK}${movie.poster_path}`;
+	console.log(movie);
+	const isTV = movie.first_air_date ? true : false;
+	const isAnime = isTV && movie.original_language === "ja";
 	const compiledText = `
-Name of the ${movie.media_type === "tv" ? "TV Show" : "Movie"} : **${
+Name of the ${isAnime ? "Anime" : isTV ? "TV show" : "Movie"} : **${
 		movie.name || movie.title
 	}**
 
 Overview : ${movie.overview}
 
-${movie.media_type === "tv" ? "First Air Date" : "Released On"} : **${
+${isTV ? "First Air Date" : "Released On"} : **${
 		movie.first_air_date || movie.release_date
 	}**
 
