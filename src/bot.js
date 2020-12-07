@@ -31,11 +31,7 @@ Now type \`!commands\``;
 		message.channel.send(greet);
 	} else if (message.content.startsWith(botCommandStarter)) {
 		// main commands
-		const command = message.content
-			.split(botCommandStarter)
-			.slice(1)
-			.join("")
-			.toLowerCase();
+		const command = message.content.slice(1).toLowerCase();
 
 		// knowing the commands
 		if (command === "commands")
@@ -49,6 +45,7 @@ Now type \`!commands\``;
 	7) \`!got\` (to get a random Game Of Thrones quote)
 	8) \`!line\` (for a random movie line)
 	9) \`!anime\` (for a random anime line)
+	10) \`!anime [name of the anime]\` (for an anime-specific quote)
 	`);
 		// empty string
 		else if (command === "")
@@ -57,8 +54,8 @@ Now type \`!commands\``;
 		else if (command === "brba") breakingBadQuote(message);
 		// Game of thrones quotes
 		else if (command === "got") gotQuote(message);
-		// random anime line
-		else if (command === "anime") animeQuote(message);
+		// anime quotes
+		else if (command.startsWith("anime")) handleAnime(message, command);
 		// searching for movie or a tv show
 		else if (command.startsWith("movie"))
 			search("movie", command.split(" ").slice(1).join(" "), message);
@@ -212,12 +209,12 @@ async function gotQuote(message) {
 }
 
 // send a random anime quote
-async function animeQuote(message) {
+async function randomAnimeQuote(message) {
 	try {
 		const returnedValue = await axios.get(
 			"https://animechanapi.xyz/api/quotes/random"
 		);
-		const data = returnedValue.data;
+		const data = returnedValue.data.data[0];
 		message.channel.send(
 			`"${data.quote}" - **${data.character}**.\n\nFrom *${data.anime}*.`
 		);
@@ -225,6 +222,31 @@ async function animeQuote(message) {
 		console.log(error);
 		message.channel.send("There was an error with the api :confused:");
 	}
+}
+
+// send a quote from the specified anime
+async function animeQuote(message, query) {
+	const randomPage = parseInt(Math.random() * 9) + 1;
+	try {
+		const returnedValue = await axios.get(
+			`https://animechanapi.xyz/api/quotes?anime=${query}&page=${randomPage}`
+		);
+		const data = returnedValue.data.data[0];
+		console.log(data);
+		message.channel.send(`"${data.quote}" - **${data.character}**.`);
+	} catch (error) {
+		console.log(error);
+		message.channel.send(
+			`There was an error with the api :confused:. Try giving the exact name of the anime. Are you sure it is only '${query}' `
+		);
+	}
+}
+
+// handling the !anime command
+function handleAnime(message, command) {
+	const query = command.split(" ").slice(1).join(" ");
+	if (!query) randomAnimeQuote(message);
+	else if (query) animeQuote(message, query);
 }
 
 // main messageEvent listener
