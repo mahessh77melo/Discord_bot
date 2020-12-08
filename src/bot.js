@@ -8,7 +8,8 @@ const myAxios = axios.create({
 	baseURL: "https://api.themoviedb.org/3",
 });
 
-let prev = {};
+// objects having the current search results of every channel
+let current = {};
 
 client.login(process.env.DISCORD_BOT_TOKEN);
 client.on("ready", () => {
@@ -22,16 +23,17 @@ const botCommandStarter = "!";
 
 // callback function for message event
 const interact = (message) => {
-	if (message.content.toLowerCase() === "hey") {
-		//  the initial greet message
-		const greet = `Hey there ${message.author.username}. I am ${client.user.tag} and <@${process.env.KINGJAMES_ID}> created me.
-I am still in the development phase. Try giving commands to me.. My commands should start with \`${botCommandStarter}\`.
-Now type \`!commands\``;
-		// send the message
-		message.channel.send(greet);
-	} else if (message.content.startsWith(botCommandStarter)) {
+	if (message.content.startsWith(botCommandStarter)) {
 		// main commands
 		const command = message.content.slice(1).toLowerCase();
+
+		// about the bot
+		if (command === "help") {
+			//  the initial greet message
+			const greet = `Hey there ${message.author.username}. I am ${client.user.tag} and <@${process.env.KINGJAMES_ID}> developed me. As of now, I am capable of giving info about your favourite movies, shows or even animes. Want quotes from famous shows like *Breaking Bad* and *Game of Thrones*, just ask! Still haven't grown up and want some anime quotes??? Try me !!! .\nNote that I am still in the development phase. My commands should start with \`${botCommandStarter}\`.\nNow type \`!commands\``;
+			// send the message
+			message.channel.send(greet);
+		}
 
 		// knowing the commands
 		if (command === "commands")
@@ -43,9 +45,8 @@ Now type \`!commands\``;
 	5) \`!list\` (to see the list of results)
 	6) \`!BrBa\` (to get a random Breaking Bad quote)
 	7) \`!got\` (to get a random Game Of Thrones quote)
-	8) \`!line\` (for a random movie line)
-	9) \`!anime\` (for a random anime line)
-	10) \`!anime [name of the anime]\` (for an anime-specific quote)
+	8) \`!anime\` (for a random anime line)
+	9) \`!anime [name of the anime]\` (for an anime-specific quote)
 	`);
 		// empty string
 		else if (command === "")
@@ -63,32 +64,32 @@ Now type \`!commands\``;
 			search("tv", command.split(" ").slice(1).join(" "), message);
 		// handling a wrong command
 		else if (command === "wrong")
-			prev[message.channel.id]
-				? handleWrong(prev[message.channel.id], message, false)
+			current[message.channel.id]
+				? handleWrong(current[message.channel.id], message, false)
 				: noPrevError(message);
 		// handling the list command
 		else if (command === "list")
-			prev[message.channel.id]
-				? handleWrong(prev[message.channel.id], message, true)
+			current[message.channel.id]
+				? handleWrong(current[message.channel.id], message, true)
 				: noPrevError(message);
 		// handling the options
-		// giving choice without a prev result
-		else if (!prev[message.channel.id] && parseInt(command))
+		// giving choice without a current set of result
+		else if (!current[message.channel.id] && parseInt(command))
 			noPrevError(message);
 		// invalid options
 		else if (
-			(prev[message.channel.id] &&
-				parseInt(command) > prev[message.channel.id].length) ||
+			(current[message.channel.id] &&
+				parseInt(command) > current[message.channel.id].length) ||
 			parseInt(command) === 0
 		)
 			message.reply(
 				`Are you messing with me?!\nIf not, choose an option __between 1 and ${
-					prev[message.channel.id].length
+					current[message.channel.id].length
 				}__.`
 			);
 		// valid options
-		else if (prev[message.channel.id] && parseInt(command) > 0)
-			returnCorrect(parseInt(command), prev[message.channel.id], message);
+		else if (current[message.channel.id] && parseInt(command) > 0)
+			returnCorrect(parseInt(command), current[message.channel.id], message);
 		// invalid command
 		else
 			message.channel.send(
@@ -107,8 +108,7 @@ async function search(media, name, message) {
 		// extracting the first element of the array (mostly correct)
 		const mainResult = res.data.results[0];
 		// storing the results in a global variable for further use
-		console.log(message.channel.id);
-		prev[message.channel.id] = res.data.results;
+		current[message.channel.id] = res.data.results;
 		if (mainResult) {
 			sendMovie(mainResult, message);
 		} else {
@@ -232,7 +232,6 @@ async function animeQuote(message, query) {
 			`https://animechanapi.xyz/api/quotes?anime=${query}&page=${randomPage}`
 		);
 		const data = returnedValue.data.data[0];
-		console.log(data);
 		message.channel.send(`"${data.quote}" - **${data.character}**.`);
 	} catch (error) {
 		console.log(error);
