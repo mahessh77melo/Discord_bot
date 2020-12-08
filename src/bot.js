@@ -143,7 +143,7 @@ async function search(media, name, message) {
 		message.channel.send(
 			"There was an api error! :confused:, Try after some time!"
 		);
-		console.log(error);
+		console.log(error.message);
 	}
 }
 
@@ -205,13 +205,12 @@ function returnCorrect(choice, movies, message) {
 // sending a random Breaking Bad quote
 async function breakingBadQuote(message) {
 	try {
-		const returnedValue = await axios.get(
-			"https://breaking-bad-quotes.herokuapp.com/v1/quotes"
-		);
+		const request = "https://breaking-bad-quotes.herokuapp.com/v1/quotes";
+		const returnedValue = await axios.get(request);
 		const result = returnedValue.data[0];
 		message.channel.send(`"${result.quote}" - **${result.author}**.`);
 	} catch (error) {
-		console.log(error);
+		console.log(error.message);
 		message.channel.send("There was an error with the api :confused:");
 	}
 }
@@ -219,13 +218,12 @@ async function breakingBadQuote(message) {
 // send a random Game of thrones quote
 async function gotQuote(message) {
 	try {
-		const returnedValue = await axios.get(
-			"https://game-of-thrones-quotes.herokuapp.com/v1/random"
-		);
+		const request = "https://game-of-thrones-quotes.herokuapp.com/v1/random";
+		const returnedValue = await axios.get(request);
 		const data = returnedValue.data;
 		message.channel.send(`"${data.sentence}" - **${data.character.name}**.`);
 	} catch (error) {
-		console.log(error);
+		console.log(error.message);
 		message.channel.send("There was an error with the api :confused:");
 	}
 }
@@ -233,9 +231,8 @@ async function gotQuote(message) {
 // send a random anime quote
 async function randomAnimeQuote(message) {
 	try {
-		const returnedValue = await axios.get(
-			"https://animechanapi.xyz/api/quotes/random"
-		);
+		const request = "https://animechanapi.xyz/api/quotes/random";
+		const returnedValue = await axios.get(request);
 		const data = returnedValue.data.data[0];
 		message.channel.send(
 			`"${data.quote}" - **${data.character}**.\n\nFrom *${data.anime}*.`
@@ -250,16 +247,24 @@ async function randomAnimeQuote(message) {
 async function animeQuote(message, query) {
 	const randomPage = parseInt(Math.random() * 9) + 1;
 	try {
-		const returnedValue = await axios.get(
-			`https://animechanapi.xyz/api/quotes?anime=${query}&page=${randomPage}`
-		);
-		const data = returnedValue.data.data[0];
-		message.channel.send(`"${data.quote}" - **${data.character}**.`);
+		const request = `https://animechanapi.xyz/api/quotes?anime=${query}&page=${randomPage}`;
+		const returnedValue = await axios.get(request);
+		const data = returnedValue.data.data && returnedValue.data.data[0];
+		if (data) message.channel.send(`"${data.quote}" - **${data.character}**.`);
+		else
+			message.channel.send(
+				`The api isn't super intelligent:confused:. Try giving the exact name of the anime. Are you sure that it is only '${query}'? `
+			);
 	} catch (error) {
-		console.log(error);
-		message.channel.send(
-			`There was an error with the api :confused:. Try giving the exact name of the anime. Are you sure it is only '${query}' `
-		);
+		console.log(error.message);
+		if (error instanceof TypeError)
+			message.channel.send(
+				"One of the characters cannot be parsed :confused:. I hope you can find a work around :)"
+			);
+		else
+			message.channel.send(
+				`There was an error with the api :confused:. Not sure what happened! `
+			);
 	}
 }
 
