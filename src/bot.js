@@ -1,4 +1,4 @@
-const { Client } = require("discord.js");
+const { Client, MessageEmbed } = require("discord.js");
 require("dotenv").config();
 const axios = require("axios");
 
@@ -29,25 +29,46 @@ const interact = (message) => {
 
 		// about the bot
 		if (command === "help") {
-			//  the initial greet message
-			const greet = `Hey there ${message.author.username}. I am ${client.user.tag} and <@${process.env.KINGJAMES_ID}> developed me. As of now, I am capable of giving info about your favourite movies, shows or even animes. Want quotes from famous shows like *Breaking Bad* and *Game of Thrones*, just ask! Still haven't grown up and want some anime quotes??? Try me !!! .\nNote that I am still in the development phase. My commands should start with \`${botCommandStarter}\`.\nNow type \`!commands\``;
+			//  the initial intro message
+			const about = `Hey there ${message.author.username}. I am ${client.user.tag} and <@${process.env.KINGJAMES_ID}> developed me. As of now, I am capable of giving info about your favourite movies, shows or even animes. Want quotes from famous shows like *Breaking Bad* and *Game of Thrones*, just ask! Still haven't grown up and want some anime quotes? Try me !!!.`;
+			const embed = new MessageEmbed()
+				.setColor("#ffba08")
+				.setTitle("The Movie Nerd")
+				.setURL("https://github.com/mahessh77melo/Discord_bot")
+				.setThumbnail(
+					"https://logo-logos.com/wp-content/uploads/2018/03/discord_icon_logo_remix.png"
+				)
+				.setDescription(about)
+				.addField(
+					"Note",
+					`My commands should start with \`${botCommandStarter}\`.\nNow type \`!commands\``,
+					true
+				);
 			// send the message
-			message.channel.send(greet);
+			message.channel.send(embed);
 		}
 
 		// knowing the commands
-		if (command === "commands")
-			message.channel.send(`A list of my commands :
-	1) \`!tv\` [name of the show]
-	2) \`!movie\` [name of the movie]
-	3) \`!wrong\` (if the result was wrong)
-	4) \`![number]\` (your choice)
-	5) \`!list\` (to see the list of results)
-	6) \`!BrBa\` (to get a random Breaking Bad quote)
-	7) \`!got\` (to get a random Game Of Thrones quote)
-	8) \`!anime\` (for a random anime line)
-	9) \`!anime [name of the anime]\` (for an anime-specific quote)
-	`);
+		else if (command === "commands") {
+			const embed = new MessageEmbed()
+				.setColor("#06d6a0")
+				.setTitle("List of my Commands")
+				.setDescription(
+					"Note that only the first word of the command is important, the rest of the command is your query and what you wish.\n"
+				)
+				.addFields(
+					{ name: "Get a tv Show", value: "`!tv peaky blinders`" },
+					{ name: "Get a Movie", value: "`!movie fight club`" },
+					{ name: "Wrong result", value: "`!wrong`" },
+					{ name: "Select the correct Choice", value: "`!5`" },
+					{ name: "See all the results", value: "`!list`" },
+					{ name: "Breaking Bad quote", value: "`!BrBa`" },
+					{ name: "Game of thrones Quote", value: "`!got`" },
+					{ name: "Random anime quote", value: "`!anime`" },
+					{ name: "Anime quote", value: "`!anime death note`" }
+				);
+			message.channel.send(embed);
+		}
 		// empty string
 		else if (command === "")
 			message.channel.send(`There was no command, ${message.author.username}.`);
@@ -130,9 +151,7 @@ async function search(media, name, message) {
 function handleWrong(movies, message, isCorrect) {
 	// user has given wrong when there was only a single result received.
 	if (movies.length === 1) {
-		message.reply(
-			"That was the only result I got. Sorry, I'd rather suggest you watch some popular ones xD."
-		);
+		message.reply("Sorry dude, That was the only result I got.");
 		return;
 	}
 	let text = `Wasn't the result you expected 🤔🤔?? pas de probleme!\nNow here are the list of results that I got, just give me the serial number and you are good to go. 
@@ -156,19 +175,22 @@ function sendMovie(movie, message) {
 	const imageUrl = `${process.env.IMG_LINK}${movie.poster_path}`;
 	const isTV = movie.first_air_date ? true : false;
 	const isAnime = isTV && movie.original_language === "ja";
-	const compiledText = `
-Name of the ${isAnime ? "Anime" : isTV ? "TV show" : "Movie"} : **${
-		movie.name || movie.title
-	}**
-
-Overview : ${movie.overview}
-
-${isTV ? "First Air Date" : "Released On"} : **${
-		movie.first_air_date || movie.release_date
-	}**
-
-`;
-	message.reply(compiledText, { files: [imageUrl] });
+	const embed = new MessageEmbed()
+		.setColor(`${isAnime ? "#ff0054" : isTV ? "#ff5400" : "#2d00f7"}`)
+		.setTitle(
+			`${isAnime ? "Anime" : isTV ? "TV show" : "Movie"} : **${
+				movie.name || movie.title
+			}**`
+		)
+		.setDescription(movie.overview)
+		.setImage(imageUrl)
+		.addField(
+			`${isTV ? "First Air Date" : "Released On"}`,
+			`**${movie.first_air_date || movie.release_date}**`,
+			false
+		)
+		.setFooter(`Source Rating : ${movie.vote_average}`);
+	message.channel.send(embed);
 }
 
 function noPrevError(message) {
