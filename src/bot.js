@@ -2,35 +2,44 @@ const { Client, MessageEmbed } = require("discord.js");
 require("dotenv").config();
 const axios = require("axios");
 
+// creating a new client
 const client = new Client();
 
+// axios header for tmdb requests
 const myAxios = axios.create({
 	baseURL: "https://api.themoviedb.org/3",
 });
 
 // objects having the current search results of every channel
 let current = {};
+// bot prefix
+const botCommandStarter = "!";
 
+// bot is online
 client.login(process.env.DISCORD_BOT_TOKEN);
+// fire the callback once the bot is online
 client.on("ready", () => {
+	// setting up rich presence for the bot
 	client.user.setPresence({
 		activity: { name: "out for !commands", type: "WATCHING" },
 		status: "online",
 	});
 	console.log(`${client.user.tag} is online and ready to go!!`);
 });
-const botCommandStarter = "!";
 
 // callback function for message event
 const interact = (message) => {
 	if (message.content.startsWith(botCommandStarter)) {
-		// main commands
+		// slice out the '!' from the command
 		const command = message.content.slice(1).toLowerCase();
 
 		// about the bot
 		if (command === "help") {
 			//  the initial intro message
 			const about = `Hey there ${message.author.username}. I am ${client.user.tag} and <@${process.env.KINGJAMES_ID}> developed me. As of now, I am capable of giving info about your favourite movies, shows or even animes. Want quotes from famous shows like *Breaking Bad* and *Game of Thrones*, just ask! Still haven't grown up and want some anime quotes? Try me !!!.`;
+
+			// MessageEmbed - to send styled and formatted messages
+			// Discord feature available only for bots
 			const embed = new MessageEmbed()
 				.setColor("#ffba08")
 				.setTitle("The Movie Nerd")
@@ -48,7 +57,7 @@ const interact = (message) => {
 			message.channel.send(embed);
 		}
 
-		// knowing the commands
+		// command for knowing the commands
 		else if (command === "commands") {
 			const embed = new MessageEmbed()
 				.setColor("#06d6a0")
@@ -166,13 +175,15 @@ function handleWrong(movies, message, isCorrect) {
 		})
 	`;
 	});
-
+	// sending the message
 	message.reply(text);
 }
 
 // function to send a movie detail as messsage
 function sendMovie(movie, message) {
+	// image url, (IMG_LINK) is the common part for all links
 	const imageUrl = `${process.env.IMG_LINK}${movie.poster_path}`;
+	// isTV is false for movies
 	const isTV = movie.first_air_date ? true : false;
 	const isAnime = isTV && movie.original_language === "ja";
 	const embed = new MessageEmbed()
@@ -190,9 +201,11 @@ function sendMovie(movie, message) {
 			false
 		)
 		.setFooter(`Source Rating : ${movie.vote_average}`);
+	// sending the embedded message
 	message.channel.send(embed);
 }
 
+// telling the user that there is no cached data
 function noPrevError(message) {
 	message.reply("Search for a movie or tv show first, then go for the choice!");
 }
@@ -238,7 +251,7 @@ async function randomAnimeQuote(message) {
 			`"${data.quote}" - **${data.character}**.\n\nFrom *${data.anime}*.`
 		);
 	} catch (error) {
-		console.log(error);
+		console.log(error.message);
 		message.channel.send("There was an error with the api :confused:");
 	}
 }
@@ -249,6 +262,7 @@ async function animeQuote(message, query) {
 	try {
 		const request = `https://animechanapi.xyz/api/quotes?anime=${query}&page=${randomPage}`;
 		const returnedValue = await axios.get(request);
+		// extract the data if and only there is something available
 		const data = returnedValue.data.data && returnedValue.data.data[0];
 		if (data) message.channel.send(`"${data.quote}" - **${data.character}**.`);
 		else
@@ -257,6 +271,7 @@ async function animeQuote(message, query) {
 			);
 	} catch (error) {
 		console.log(error.message);
+		// TypeError means that there was a special char given into the request url
 		if (error instanceof TypeError)
 			message.channel.send(
 				"One of the characters cannot be parsed :confused:. I hope you can find a work around :)"
@@ -271,6 +286,7 @@ async function animeQuote(message, query) {
 // handling the !anime command
 function handleAnime(message, command) {
 	const query = command.split(" ").slice(1).join(" ");
+	// if there is a query, call animeQuote, or else....random quote
 	if (!query) randomAnimeQuote(message);
 	else if (query) animeQuote(message, query);
 }
