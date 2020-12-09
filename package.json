@@ -1,8 +1,8 @@
 {
   "name": "discord_bot",
   "version": "1.0.0",
-  "description": "My first discord bot",
-  "main": "index.js",
+  "description": "A discord bot capable of giving info about movies, tv shows and animes that is also equipped with the capability of giving out quotes on famous shows like BrBa, GOT and famous animes.",
+  "main": "bot.js",
   "scripts": {
     "start": "node ./src/bot.js",
     "dev": "nodemon ./src/bot.js"

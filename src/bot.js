@@ -128,6 +128,7 @@ const interact = (message) => {
 	} else return;
 };
 
+// function to search the movies, tv shows and animes from tmdb
 async function search(media, name, message) {
 	try {
 		const res = await myAxios.get(
@@ -276,6 +277,7 @@ async function animeQuote(message, query) {
 			message.channel.send(
 				"One of the characters cannot be parsed :confused:. I hope you can find a work around :)"
 			);
+		// unknown rare error has occured
 		else
 			message.channel.send(
 				`There was an error with the api :confused:. Not sure what happened! `
