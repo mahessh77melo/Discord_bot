@@ -14,6 +14,18 @@ const myAxios = axios.create({
 let current = {};
 // bot prefix
 const botCommandStarter = "!";
+// list of commands
+const commandList = [
+	"help",
+	"commands",
+	"brba",
+	"anime",
+	"got",
+	"list",
+	"wrong",
+	"movie",
+	"tv",
+];
 
 // bot is online
 client.login(process.env.DISCORD_BOT_TOKEN);
@@ -121,10 +133,7 @@ const interact = (message) => {
 		else if (current[message.channel.id] && parseInt(command) > 0)
 			returnCorrect(parseInt(command), current[message.channel.id], message);
 		// invalid command
-		else
-			message.channel.send(
-				`I don't know how to handle the __**${command}**__ command! 😒😒`
-			);
+		else dontKnow(command, message);
 	} else return;
 };
 
@@ -186,6 +195,7 @@ function sendMovie(movie, message) {
 	const imageUrl = `${process.env.IMG_LINK}${movie.poster_path}`;
 	// isTV is false for movies
 	const isTV = movie.first_air_date ? true : false;
+	// isAnime is true only for animes
 	const isAnime = isTV && movie.original_language === "ja";
 	const embed = new MessageEmbed()
 		.setColor(`${isAnime ? "#ff0054" : isTV ? "#ff5400" : "#2d00f7"}`)
@@ -291,6 +301,22 @@ function handleAnime(message, command) {
 	// if there is a query, call animeQuote, or else....random quote
 	if (!query) randomAnimeQuote(message);
 	else if (query) animeQuote(message, query);
+}
+
+// unknown command handling
+function dontKnow(command, message) {
+	// default reply
+	const statement = `I don't know how to handle the __**${command}**__ command! 😒😒`;
+	// striping the command's first two letters
+	const strip = command.slice(0, 2);
+	// finding a similar command with first two letters
+	let nearest = commandList.find((word) => word.startsWith(strip));
+	// finding a similar command with only the first letter
+	if (!nearest)
+		nearest = commandList.find((word) => word.startsWith(strip.slice(0, 1)));
+	// suggestion statement
+	const suggestion = nearest ? `\nMaybe you meant **${nearest}** ?` : "";
+	message.channel.send(statement + suggestion);
 }
 
 // main messageEvent listener
