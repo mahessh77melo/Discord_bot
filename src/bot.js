@@ -145,10 +145,17 @@ async function search(media, name, message) {
 				.split(" ")
 				.join("+")}`
 		);
+
+		// sorting in descending order of popularity
+		const sortedResults = res.data.results.sort((a, b) =>
+			a.popularity > b.popularity ? -1 : 1
+		);
+
 		// extracting the first element of the array (mostly correct)
-		const mainResult = res.data.results[0];
+		const mainResult = sortedResults[0];
 		// storing the results in a global variable for further use
-		current[message.channel.id] = res.data.results;
+		current[message.channel.id] = sortedResults;
+
 		if (mainResult) {
 			sendMovie(mainResult, message);
 		} else {
