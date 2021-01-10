@@ -312,8 +312,10 @@ function handleAnime(message, command) {
 
 // unknown command handling
 function dontKnow(command, message) {
+	// cutting out the query (if any)
+	let com = command.split(" ")[0];
 	// default reply
-	const statement = `I don't know how to handle the __**${command}**__ command! 😒😒`;
+	const statement = `I don't know how to handle the __**${com}**__ command! 😒😒`;
 	// striping the command's first two letters
 	const strip = command.slice(0, 2);
 	// finding a similar command with first two letters
