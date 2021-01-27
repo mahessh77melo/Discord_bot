@@ -146,11 +146,22 @@ async function search(media, name, message) {
 				.join("+")}`
 		);
 
+		let collection = [...res.data.results];
+		// checking for multiple pages of results
+		if (res.data.results.length > 19) {
+			const page2 = await myAxios.get(
+				`/search/${media}?api_key=${process.env.TMDB_KEY}&query=${name
+					.split(" ")
+					.join("+")}&page=2`
+			);
+
+			collection = [...res.data.results, ...page2.data.results];
+		}
+
 		// sorting in descending order of popularity
-		const sortedResults = res.data.results.sort((a, b) =>
+		const sortedResults = collection.sort((a, b) =>
 			a.popularity > b.popularity ? -1 : 1
 		);
-
 		// extracting the first element of the array (mostly correct)
 		const mainResult = sortedResults[0];
 		// storing the results in a global variable for further use
