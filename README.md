@@ -20,11 +20,12 @@ Commands :
 
 <br>
 
+Click [here](https://discord.com/api/oauth2/authorize?client_id=784436998491996221&permissions=523344&scope=bot) to add **the Movie Nerd** to your Discord server. 
+
 Any help from a fellow developer is appreciated! 
 Fork my repo and submit a pull request from your own branch if you can suggest me another suitable feature for this bot.
 
-
-Also feel free to use this bot on your server as this is a public one. 
+Feel free to reach out to me.
 My Discord tag --> **kingJames#2472**.
 
 
