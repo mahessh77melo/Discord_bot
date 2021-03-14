@@ -273,9 +273,10 @@ async function gotQuote(message) {
 // send a random anime quote
 async function randomAnimeQuote(message) {
 	try {
-		const request = "https://animechanapi.xyz/api/quotes/random";
+		const request = "https://animechan.vercel.app/api/random";
 		const returnedValue = await axios.get(request);
-		const data = returnedValue.data.data[0];
+		const data = returnedValue.data;
+		console.log(data);
 		message.channel.send(
 			`"${data.quote}" - **${data.character}**.\n\nFrom *${data.anime}*.`
 		);
@@ -289,10 +290,11 @@ async function randomAnimeQuote(message) {
 async function animeQuote(message, query) {
 	const randomPage = parseInt(Math.random() * 9) + 1;
 	try {
-		const request = `https://animechanapi.xyz/api/quotes?anime=${query}&page=${randomPage}`;
+		const request = `https://animechan.vercel.app/api/quotes/anime?title=${query}&page=${randomPage}`;
 		const returnedValue = await axios.get(request);
 		// extract the data if and only there is something available
-		const data = returnedValue.data.data && returnedValue.data.data[0];
+		const data = returnedValue.data && returnedValue.data[0];
+		console.log(data);
 		if (data) message.channel.send(`"${data.quote}" - **${data.character}**.`);
 		else
 			message.channel.send(
@@ -308,7 +310,7 @@ async function animeQuote(message, query) {
 		// unknown rare error has occured
 		else
 			message.channel.send(
-				`There was an error with the api :confused:. Not sure what happened! `
+				`There was an error with the api :confused:. ${error.message} `
 			);
 	}
 }
