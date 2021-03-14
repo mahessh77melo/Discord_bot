@@ -4,8 +4,8 @@
   "description": "A discord bot capable of giving info about movies, tv shows and animes that is also equipped with the capability of giving out quotes on famous shows like BrBa, GOT and famous animes.",
   "main": "bot.js",
   "scripts": {
-    "start": "node ./src/bot.js",
-    "dev": "nodemon ./src/bot.js"
+    "start": "node bot.js",
+    "dev": "nodemon bot.js"
   },
   "author": "Mahesh",
   "license": "ISC",
