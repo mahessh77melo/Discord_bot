@@ -33,7 +33,7 @@ client.login(process.env.DISCORD_BOT_TOKEN);
 client.on("ready", () => {
 	// setting up rich presence for the bot
 	client.user.setPresence({
-		activity: { name: "out for !commands", type: "WATCHING" },
+		activity: { name: "out for $commands", type: "WATCHING" },
 		status: "online",
 	});
 	console.log(`${client.user.tag} is online and ready to go!!`);
@@ -62,7 +62,7 @@ const interact = (message) => {
 				.setDescription(about)
 				.addField(
 					"Note",
-					`My commands should start with \`${botCommandStarter}\`.\nNow type \`!commands\``,
+					`My commands should start with \`${botCommandStarter}\`.\nNow type \`$commands\``,
 					true
 				);
 			// send the message
