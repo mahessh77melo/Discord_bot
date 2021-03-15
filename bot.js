@@ -12,6 +12,13 @@ const myAxios = axios.create({
 
 // objects having the current search results of every channel
 let current = {};
+
+// API urls
+const api_urls = {
+	brba: "https://breaking-bad-quotes.herokuapp.com/v1/quotes",
+	got: "https://game-of-thrones-quotes.herokuapp.com/v1/random",
+	anime: "https://animechan.vercel.app/api",
+};
 // bot prefix
 const botCommandStarter = "$";
 // list of commands
@@ -247,8 +254,7 @@ function returnCorrect(choice, movies, message) {
 // sending a random Breaking Bad quote
 async function breakingBadQuote(message) {
 	try {
-		const request = "https://breaking-bad-quotes.herokuapp.com/v1/quotes";
-		const returnedValue = await axios.get(request);
+		const returnedValue = await axios.get(api_urls.brba);
 		const result = returnedValue.data[0];
 		message.channel.send(`"${result.quote}" - **${result.author}**.`);
 	} catch (error) {
@@ -260,8 +266,7 @@ async function breakingBadQuote(message) {
 // send a random Game of thrones quote
 async function gotQuote(message) {
 	try {
-		const request = "https://game-of-thrones-quotes.herokuapp.com/v1/random";
-		const returnedValue = await axios.get(request);
+		const returnedValue = await axios.get(api_urls.got);
 		const data = returnedValue.data;
 		message.channel.send(`"${data.sentence}" - **${data.character.name}**.`);
 	} catch (error) {
@@ -273,7 +278,7 @@ async function gotQuote(message) {
 // send a random anime quote
 async function randomAnimeQuote(message) {
 	try {
-		const request = "https://animechan.vercel.app/api/random";
+		const request = `${api_urls.anime}/random`;
 		const returnedValue = await axios.get(request);
 		const data = returnedValue.data;
 		console.log(data);
@@ -290,7 +295,7 @@ async function randomAnimeQuote(message) {
 async function animeQuote(message, query) {
 	const randomPage = parseInt(Math.random() * 9) + 1;
 	try {
-		const request = `https://animechan.vercel.app/api/quotes/anime?title=${query}&page=${randomPage}`;
+		const request = `${api_urls.anime}/quotes/anime?title=${query}&page=${randomPage}`;
 		const returnedValue = await axios.get(request);
 		// extract the data if and only there is something available
 		const data = returnedValue.data && returnedValue.data[0];
