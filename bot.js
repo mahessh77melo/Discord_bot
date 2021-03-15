@@ -13,7 +13,7 @@ const myAxios = axios.create({
 // objects having the current search results of every channel
 let current = {};
 // bot prefix
-const botCommandStarter = "!";
+const botCommandStarter = "$";
 // list of commands
 const commandList = [
 	"help",
@@ -78,15 +78,15 @@ const interact = (message) => {
 					"Note that only the first word of the command is important, the rest of the command is your query and what you wish.\n"
 				)
 				.addFields(
-					{ name: "Get a tv Show", value: "`!tv peaky blinders`" },
-					{ name: "Get a Movie", value: "`!movie fight club`" },
-					{ name: "Wrong result", value: "`!wrong`" },
-					{ name: "Select the correct Choice", value: "`!5`" },
-					{ name: "See all the results", value: "`!list`" },
-					{ name: "Breaking Bad quote", value: "`!BrBa`" },
-					{ name: "Game of thrones Quote", value: "`!got`" },
-					{ name: "Random anime quote", value: "`!anime`" },
-					{ name: "Anime quote", value: "`!anime death note`" }
+					{ name: "Get a tv Show", value: "`$tv peaky blinders`" },
+					{ name: "Get a Movie", value: "`$movie fight club`" },
+					{ name: "Wrong result", value: "`$wrong`" },
+					{ name: "Select the correct Choice", value: "`$5`" },
+					{ name: "See all the results", value: "`$list`" },
+					{ name: "Breaking Bad quote", value: "`$BrBa`" },
+					{ name: "Game of thrones Quote", value: "`$got`" },
+					{ name: "Random anime quote", value: "`$anime`" },
+					{ name: "Anime quote", value: "`$anime death note`" }
 				);
 			message.channel.send(embed);
 		}

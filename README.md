@@ -5,17 +5,17 @@ This bot is done using **Node.js** and the **discord.js** libraries.
 The tag of the bot is **theMovieNerd#6877**.
 
 Commands :
-- The bot command starter is set to `!`.
+- The bot command starter is set to `$`.
 - As of now, the bot is capable of giving info about the movies or tv shows or even animes and giving out quotes
-- `!help` to get a basic intro about me.
-- `!movie shawshank redemption` for a movie and `!tv peaky blinders` for shows.
-- `!wrong` if the movie or show that you got as a result wasn't the one you searched for, this is for further interaction.
-- `![number]` when asked for your choice when the other results are shown to you, this is to be done after giving the `!wrong` command.
-- `!list` if you want to explore the other results.
-- `!BrBa` for a random Breaking Bad quote.
-- `!got` for a random Game of thrones quote.
-- `!anime` for a random anime quote.
-- `!anime kuroko no basket` for quotes from a specific anime.
+- `$help` to get a basic intro about me.
+- `$movie shawshank redemption` for a movie and `$tv peaky blinders` for shows.
+- `$wrong` if the movie or show that you got as a result wasn't the one you searched for, this is for further interaction.
+- `$[number]` when asked for your choice when the other results are shown to you, this is to be done after giving the `$wrong` command.
+- `$list` if you want to explore the other results.
+- `$BrBa` for a random Breaking Bad quote.
+- `$got` for a random Game of thrones quote.
+- `$anime` for a random anime quote.
+- `$anime kuroko no basket` for quotes from a specific anime.
 - The bot is capable of politely responding to irrelevant commands and invalid movie names.
 
 <br>
