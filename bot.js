@@ -310,9 +310,9 @@ async function brbaDeath(message) {
 	try {
 		const returnedValue = await axios.get(api_urls.death);
 		const data = returnedValue.data;
-		const description = `
-		Cause : ${data.cause}\n
-		Responsible : ${data.responsible}\n
+		const description = `\n
+		Cause : ${data.cause}
+		Responsible : ${data.responsible}
 		Occupation : ${data.occupation[0]}\n
 		`;
 		const imageUrl = data.img;
