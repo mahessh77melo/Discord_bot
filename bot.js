@@ -19,6 +19,13 @@ const api_urls = {
 	got: "https://game-of-thrones-quotes.herokuapp.com/v1/random",
 	anime: "https://animechan.vercel.app/api",
 };
+
+// Other urls
+const other_urls = {
+	repoLink: "https://github.com/mahessh77melo/Discord_bot",
+	profilePic:
+		"https://logo-logos.com/wp-content/uploads/2018/03/discord_icon_logo_remix.png",
+};
 // bot prefix
 const botCommandStarter = "$";
 // list of commands
@@ -66,10 +73,8 @@ const interact = (message) => {
 			const embed = new MessageEmbed()
 				.setColor("#ffba08")
 				.setTitle("The Movie Nerd")
-				.setURL("https://github.com/mahessh77melo/Discord_bot")
-				.setThumbnail(
-					"https://logo-logos.com/wp-content/uploads/2018/03/discord_icon_logo_remix.png"
-				)
+				.setURL(other_urls.repoLink)
+				.setThumbnail(other_urls.profilePic)
 				.setDescription(about)
 				.addField(
 					"Note",
@@ -216,7 +221,7 @@ function handleWrong(movies, message, isCorrect) {
 	let text = `Wasn't the result you expected 🤔🤔?? pas de probleme!\nNow here are the list of results that I got, just give me the serial number and you are good to go. 
 	`;
 	// differentiating a list command from a wrong command
-	isCorrect ? (text = `Here are the list of results\n	`) : "";
+	isCorrect && (text = `Here are the list of results\n	`);
 
 	// adding every movie to the text string
 	movies.forEach((movie, index) => {
