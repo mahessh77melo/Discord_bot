@@ -46,7 +46,11 @@ client.on("ready", () => {
 	console.log(`${client.user.tag} is online and ready to go!!`);
 });
 
-// callback function for message event
+/**
+ * callback function for message event
+ * @param {*} message
+ * @returns null
+ */
 const interact = (message) => {
 	if (message.content.startsWith(botCommandStarter)) {
 		// slice out the '!' from the command
@@ -144,7 +148,12 @@ const interact = (message) => {
 	} else return;
 };
 
-// function to search the movies, tv shows and animes from tmdb
+/**
+ * function to search the movies, tv shows and animes from tmdb
+ * @param {String} media
+ * @param {String} name
+ * @param {} message
+ */
 async function search(media, name, message) {
 	try {
 		const res = await myAxios.get(
@@ -191,7 +200,13 @@ async function search(media, name, message) {
 	}
 }
 
-// handling the wrong results by showing a number of other results
+/**
+ * handling the wrong results by showing a number of other results
+ * @param {Object[]} movies
+ * @param {*} message
+ * @param {Boolean} isCorrect
+ * @returns
+ */
 function handleWrong(movies, message, isCorrect) {
 	// user has given wrong when there was only a single result received.
 	if (movies.length === 1) {
@@ -214,7 +229,11 @@ function handleWrong(movies, message, isCorrect) {
 	message.reply(text);
 }
 
-// function to send a movie detail as messsage
+/**
+ * function to send a movie detail as messsage
+ * @param {Object} movie
+ * @param {*} message
+ */
 function sendMovie(movie, message) {
 	// image url, (IMG_LINK) is the common part for all links
 	const imageUrl = `${process.env.IMG_LINK}${movie.poster_path}`;
@@ -241,17 +260,28 @@ function sendMovie(movie, message) {
 	message.channel.send(embed);
 }
 
-// telling the user that there is no cached data
+/**
+ * telling the user that there is no cached data
+ * @param {*} message
+ */
 function noPrevError(message) {
 	message.reply("Search for a movie or tv show first, then go for the choice!");
 }
 
-// calling the sendMovie function with the correct choice
+/**
+ * calling the sendMovie function with the correct choice
+ * @param {Number} choice
+ * @param {Object[]} movies
+ * @param {*} message
+ */
 function returnCorrect(choice, movies, message) {
 	sendMovie(movies[choice - 1], message);
 }
 
-// sending a random Breaking Bad quote
+/**
+ * sending a random Breaking Bad quote
+ * @param {*} message
+ */
 async function breakingBadQuote(message) {
 	try {
 		const returnedValue = await axios.get(api_urls.brba);
@@ -263,7 +293,10 @@ async function breakingBadQuote(message) {
 	}
 }
 
-// send a random Game of thrones quote
+/**
+ * send a random Game of thrones quote
+ * @param {*} message
+ */
 async function gotQuote(message) {
 	try {
 		const returnedValue = await axios.get(api_urls.got);
@@ -275,7 +308,10 @@ async function gotQuote(message) {
 	}
 }
 
-// send a random anime quote
+/**
+ * send a random anime quote
+ * @param {*} message
+ */
 async function randomAnimeQuote(message) {
 	try {
 		const request = `${api_urls.anime}/random`;
@@ -291,7 +327,11 @@ async function randomAnimeQuote(message) {
 	}
 }
 
-// send a quote from the specified anime
+/**
+ * send a quote from the specified anime
+ * @param {*} message
+ * @param {String} query
+ */
 async function animeQuote(message, query) {
 	const randomPage = parseInt(Math.random() * 9) + 1;
 	try {
@@ -320,7 +360,11 @@ async function animeQuote(message, query) {
 	}
 }
 
-// handling the !anime command
+/**
+ * handling the !anime command
+ * @param {*} message
+ * @param {String} command
+ */
 function handleAnime(message, command) {
 	const query = command.split(" ").slice(1).join(" ");
 	// if there is a query, call animeQuote, or else....random quote
@@ -328,7 +372,11 @@ function handleAnime(message, command) {
 	else if (query) animeQuote(message, query);
 }
 
-// unknown command handling
+/**
+ * unknown command handling
+ * @param {String} command
+ * @param {*} message
+ */
 function dontKnow(command, message) {
 	// cutting out the query (if any)
 	let com = command.split(" ")[0];
