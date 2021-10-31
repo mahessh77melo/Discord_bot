@@ -15,7 +15,7 @@ let current = {};
 
 // API urls
 const api_urls = {
-	brba: "https://breaking-bad-quotes.herokuapp.com/v1/quotes",
+	brba: "https://breakingbadapi.com/api/quote/random",
 	got: "https://got-quotes.herokuapp.com/quotes",
 	anime: "https://animechan.vercel.app/api",
 };
@@ -290,7 +290,7 @@ function returnCorrect(choice, movies, message) {
 async function breakingBadQuote(message) {
 	try {
 		const returnedValue = await axios.get(api_urls.brba);
-		const result = returnedValue.data[0];
+		const result = returnedValue.data;
 		message.channel.send(`"${result.quote}" - **${result.author}**.`);
 	} catch (error) {
 		console.log(error.message);
