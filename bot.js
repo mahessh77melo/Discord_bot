@@ -290,7 +290,7 @@ function returnCorrect(choice, movies, message) {
 async function breakingBadQuote(message) {
 	try {
 		const returnedValue = await axios.get(api_urls.brba);
-		const result = returnedValue.data;
+		const result = returnedValue.data[0];
 		message.channel.send(`"${result.quote}" - **${result.author}**.`);
 	} catch (error) {
 		console.log(error.message);
@@ -306,7 +306,7 @@ async function gotQuote(message) {
 	try {
 		const returnedValue = await axios.get(api_urls.got);
 		const data = returnedValue.data;
-		message.channel.send(`"${data.quote}" - **${data.character.character}**.`);
+		message.channel.send(`"${data.quote}" - **${data.character}**.`);
 	} catch (error) {
 		console.log(error.message);
 		message.channel.send("There was an error with the api :confused:");
