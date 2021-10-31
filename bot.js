@@ -16,6 +16,7 @@ let current = {};
 // API urls
 const api_urls = {
 	brba: "https://breakingbadapi.com/api/quote/random",
+	death: "https://breakingbadapi.com/api/random-death",
 	got: "https://got-quotes.herokuapp.com/quotes",
 	anime: "https://animechan.vercel.app/api",
 };
@@ -100,6 +101,7 @@ const interact = (message) => {
 					{ name: "Select the correct Choice", value: "`$5`" },
 					{ name: "See all the results", value: "`$list`" },
 					{ name: "Breaking Bad quote", value: "`$BrBa`" },
+					{ name: "Breaking Bad death", value: "`$death`" },
 					{ name: "Game of thrones Quote", value: "`$got`" },
 					{ name: "Random anime quote", value: "`$anime`" },
 					{ name: "Anime quote", value: "`$anime death note`" }
@@ -111,6 +113,8 @@ const interact = (message) => {
 			message.channel.send(`There was no command, ${message.author.username}.`);
 		// breaking bad quotes
 		else if (command === "brba") breakingBadQuote(message);
+		// breaking bad quotes
+		else if (command === "death") brbaDeath(message);
 		// Game of thrones quotes
 		else if (command === "got") gotQuote(message);
 		// anime quotes
@@ -292,6 +296,35 @@ async function breakingBadQuote(message) {
 		const returnedValue = await axios.get(api_urls.brba);
 		const result = returnedValue.data[0];
 		message.channel.send(`"${result.quote}" - **${result.author}**.`);
+	} catch (error) {
+		console.log(error.message);
+		message.channel.send("There was an error with the api :confused:");
+	}
+}
+
+/**
+ * send the info about a random Breaking Bad Death xD
+ * @param {*} message
+ */
+async function brbaDeath(message) {
+	try {
+		const returnedValue = await axios.get(api_urls.death);
+		const data = returnedValue.data;
+		const description = `
+		Cause : ${data.cause}\n
+		Responsible : ${data.responsible}\n
+		Occupation : ${data.occupation[0]}\n
+		`;
+		const imageUrl = data.img;
+		// creating the embed message object
+		const embed = new MessageEmbed()
+			.setColor(`#d90429`)
+			.setTitle(`**${data.death}'s Death**`)
+			.setDescription(description)
+			.setImage(imageUrl)
+			.setFooter(`Episode : Season ${data.season} - Ep${data.episode}`);
+		// sending the embedded message
+		message.channel.send(embed);
 	} catch (error) {
 		console.log(error.message);
 		message.channel.send("There was an error with the api :confused:");
