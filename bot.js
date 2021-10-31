@@ -321,8 +321,8 @@ async function brbaDeath(message) {
 			.setColor(`#d90429`)
 			.setTitle(`**${data.death}'s Death**`)
 			.setDescription(description)
-			.setImage(imageUrl)
-			.setFooter(`Episode : Season ${data.season} - Ep${data.episode}`);
+			.setThumbnail(imageUrl)
+			.setFooter(`Sambavam : Season ${data.season} - Ep${data.episode}`);
 		// sending the embedded message
 		message.channel.send(embed);
 	} catch (error) {
