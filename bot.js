@@ -16,7 +16,7 @@ let current = {};
 // API urls
 const api_urls = {
 	brba: "https://breaking-bad-quotes.herokuapp.com/v1/quotes",
-	got: "https://game-of-thrones-quotes.herokuapp.com/v1/random",
+	got: "https://got-quotes.herokuapp.com/quotes",
 	anime: "https://animechan.vercel.app/api",
 };
 
@@ -306,7 +306,7 @@ async function gotQuote(message) {
 	try {
 		const returnedValue = await axios.get(api_urls.got);
 		const data = returnedValue.data;
-		message.channel.send(`"${data.sentence}" - **${data.character.name}**.`);
+		message.channel.send(`"${data.quote}" - **${data.character.character}**.`);
 	} catch (error) {
 		console.log(error.message);
 		message.channel.send("There was an error with the api :confused:");
