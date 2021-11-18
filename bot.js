@@ -280,7 +280,7 @@ async function sendMovie(movie, message) {
 		.addField("For Purchase", `${buy || "Better go for torrent"}`, false)
 		.setFooter(`Source Rating : ${movie.vote_average}`);
 
-	if (indianProvidersSubs.length > 0) {
+	if (indianProvidersSubs?.length > 0) {
 		embed.setThumbnail(
 			`${process.env.IMG_LINK}${indianProvidersSubs[0].logo_path}`
 		);
