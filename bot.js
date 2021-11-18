@@ -5,6 +5,7 @@ const axios = require("axios");
 // creating a new client
 const client = new Client();
 
+//  https://api.themoviedb.org/3/movie/{movie_id}/watch/providers?api_key=441508ec84fd07866da08c667c78b4fb
 // axios header for tmdb requests
 const myAxios = axios.create({
 	baseURL: "https://api.themoviedb.org/3",
@@ -243,13 +244,24 @@ function handleWrong(movies, message, isCorrect) {
  * @param {Object} movie
  * @param {*} message
  */
-function sendMovie(movie, message) {
+async function sendMovie(movie, message) {
 	// image url, (IMG_LINK) is the common part for all links
 	const imageUrl = `${process.env.IMG_LINK}${movie.poster_path}`;
 	// isTV is false for movies
 	const isTV = movie.first_air_date ? true : false;
 	// isAnime is true only for animes
 	const isAnime = isTV && movie.original_language === "ja";
+
+	// extracting the watch providers of the movie
+	const watchProviders = await myAxios.get(
+		`/movie/${movie.id}/watch/providers?api_key=${process.env.TMDB_KEY}`
+	);
+	const indianProvidersSubs =
+		watchProviders.data?.results?.IN?.flatrate || null;
+	const indianProvidersBuy = watchProviders.data?.results?.IN?.buy || null;
+	const subs = indianProvidersSubs?.map((obj) => obj.provider_name).join(", ");
+	const buy = indianProvidersBuy?.map((obj) => obj.provider_name).join(", ");
+
 	const embed = new MessageEmbed()
 		.setColor(`${isAnime ? "#ff0054" : isTV ? "#ff5400" : "#2d00f7"}`)
 		.setTitle(
@@ -264,7 +276,15 @@ function sendMovie(movie, message) {
 			`**${movie.first_air_date || movie.release_date}**`,
 			false
 		)
+		.addField("Availability on OTT-India", `${subs || "None"}`, false)
+		.addField("For Purchase", `${buy || "Better go for torrent"}`, false)
 		.setFooter(`Source Rating : ${movie.vote_average}`);
+
+	if (indianProvidersSubs.length > 0) {
+		embed.setThumbnail(
+			`${process.env.IMG_LINK}${indianProvidersSubs[0].logo_path}`
+		);
+	}
 	// sending the embedded message
 	message.channel.send(embed);
 }
